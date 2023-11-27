@@ -8,13 +8,13 @@ import time
 import re
 import event
 import json
+import requests
 import datetime as dt
 from collections import OrderedDict
 import urllib.request
 from bs4 import BeautifulSoup
 file_data = OrderedDict()
 driver = webdriver.Chrome()
-import base_Flask
 url = "https://www.weather.go.kr/pews/"  # Replace with the URL of the web page
 driver.get(url)
 
@@ -47,9 +47,9 @@ def start():
         # Formatted output
         formatted_output = f"최대예상진도 {intensity}"
 
-        file_data["latitude"] = script_tags[0].text[17792:17796]
-        file_data["longitude"] = script_tags[0].text[17815:17822]
-        file_data["magnitude"] = magnitude
+        file_data["latitude"] = int(script_tags[0].text[17792:17797])
+        file_data["longitude"] = int(script_tags[0].text[17815:17821])
+        file_data["magnitude"] = int(magnitude)
         print(json.dumps(file_data,ensure_ascii=False, indent="\t"))
         if item == '':
             item = script_tags[0]
@@ -59,12 +59,13 @@ def start():
                 text = iframe_soup.select(".est_mag")
                 print(script_tags[0].text[17776:17822])
                 print(formatted_output)
-                file_data["latitude"] = script_tags[0].text[17792:17822]
-                file_data["longitude"] = script_tags[0].text[17817:17822]
-                file_data["magnitude"] = magnitude
-
-                base_Flask.data = file_data
-                #지진 났으니깐 서버에 지진 났다고 전달, text값도 같이 전달(flask)
+                file_data["latitude"] = int(script_tags[0].text[17792:17797])
+                file_data["longitude"] = int(script_tags[0].text[17815:17821])
+                file_data["magnitude"] = int(magnitude)
+                url = 'http://ec2-3-35-100-8.ap-northeast-2.compute.amazonaws.com:8080/warn/eqk'
+                #지진 났으니깐 서버에 지진 났다고 전달, text값도 같이 전달
+                response = requests.post(url, data=file_data, headers={'Content-Type': 'application/json'})
+                #뉴스 크롤링 event 시작
                 event.start("지진")
         time.sleep(3)    
         driver.refresh()
