@@ -12,7 +12,16 @@ import json
 import requests
 import base_Flask
 from collections import OrderedDict
-driver = webdriver.Chrome()
+options = Options()
+options.add_argument("--headless")
+options.add_argument("window-size=1400,1500")
+options.add_argument("--disable-gpu")
+options.add_argument("--no-sandbox")
+options.add_argument("start-maximized")
+options.add_argument("enable-automation")
+options.add_argument("--disable-infobars")
+options.add_argument("--disable-dev-shm-usage")
+driver = webdriver.Chrome(options=options)
 file_data = OrderedDict()
 
 driver.get("https://www.safekorea.go.kr/idsiSFK/neo/sfk/cs/sfc/dis/disasterMsgList.jsp?menuSeq=679")
@@ -41,7 +50,7 @@ while(True):
         if (title[0].get("title") != new_title[0].get("title")):
             #새 데이터 감지 > 배열의 0번째 요소(가장 최신 요소)가 변경되었을 때
             file_data["contents"] = new_title[0].get("title")
-            url = 'http://ec2-3-35-100-8.ap-northeast-2.compute.amazonaws.com:8080/warn/eqk'
+            url = 'http://ec2-3-35-100-8.ap-northeast-2.compute.amazonaws.com:8080/warn/war'
 
             response = requests.post(url, data=file_data, headers={'Content-Type': 'application/json'})
 
