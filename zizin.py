@@ -37,6 +37,7 @@ def start():
         soup = BeautifulSoup(html_content, "html.parser")
         iFrames=[] # qucik bs4 example
         iframexx = soup.find_all('iframe')
+        url = "https://www.weather.go.kr/pews/"
         response = urllib.request.urlopen(url + iframexx[0].attrs['src'])
         iframe_soup = BeautifulSoup(response)
         script_tags = iframe_soup.find_all("script")
@@ -57,8 +58,8 @@ def start():
         # Formatted output
         formatted_output = f"최대예상진도 {intensity}"
 
-        file_data["latitude"] = int(script_tags[0].text[17792:17797])
-        file_data["longitude"] = int(script_tags[0].text[17815:17821])
+        file_data["latitude"] = float(script_tags[0].text[17792:17797])
+        file_data["longitude"] = float(script_tags[0].text[17815:17821])
         file_data["magnitude"] = int(magnitude)
         print(json.dumps(file_data,ensure_ascii=False, indent="\t"))
         if item == '':
@@ -69,8 +70,8 @@ def start():
                 text = iframe_soup.select(".est_mag")
                 print(script_tags[0].text[17776:17822])
                 print(formatted_output)
-                file_data["latitude"] = int(script_tags[0].text[17792:17797])
-                file_data["longitude"] = int(script_tags[0].text[17815:17821])
+                file_data["latitude"] = float(script_tags[0].text[17792:17797])
+                file_data["longitude"] = float(script_tags[0].text[17815:17821])
                 file_data["magnitude"] = int(magnitude)
                 url = 'http://ec2-3-35-100-8.ap-northeast-2.compute.amazonaws.com:8080/warn/eqk'
                 #지진 났으니깐 서버에 지진 났다고 전달, text값도 같이 전달
