@@ -96,10 +96,12 @@ def start(search):
                 # html태그제거
                 pattern1 = '<[^>]*>'
                 title_test = re.sub(pattern=pattern1, repl='', string=title)
-                #if search == '북한':
-                    
-                    ##if ai_base.is_emergency(title_test,'war_model') == 1:
-                naver_urls.append(url)
+                if search == '북한':
+                    if ai_base.is_emergency(title_test,'war_model') == 1:
+                        naver_urls.append(url)
+                elif search == '지진':
+                    if ai_base.is_emergency(title_test) == 1:
+                        naver_urls.append(url)
             else:
                 pass
             # 현재 탭 닫기
