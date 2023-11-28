@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 import news_sum
 import ai_base
-
+import paramiko
 # 웹드라이버 설정
 options = webdriver.ChromeOptions()
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -166,5 +166,25 @@ def start(search):
     news_df = pd.DataFrame({'title': titles, 'link': naver_urls, 'content': contents, 'summary': sum})
 
     news_df.to_csv('NaverNews_%s.csv' % search, index=False, encoding='utf-8-sig')
+    # 서버 정보 설정
+    hostname = '3.36.101.246'
+    username = 'ec2-user'
+    port = 22  # SSH 포트, 기본값은 22
 
+    # 파일 정보 설정
+    local_file = 'NaverNews_' + search +'.csv'
+    remote_path = '/home/ec2-user/data/NaverNews_' + search + '.csv'
+
+    # SFTP 세션 시작
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    mykey = paramiko.RSAKey.from_private_key_file('C:/Users/ParkJinoh/Desktop/Crowlling/tibero.pem')
+    ssh_client.connect(hostname, port, username, pkey=mykey)
+
+    sftp = ssh_client.open_sftp()
+    sftp.put(local_file, remote_path)  # 파일 전송
+    sftp.close()
+
+    ssh_client.close()
     
