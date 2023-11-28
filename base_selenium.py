@@ -1,3 +1,4 @@
+print("문자감지 시작")
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -38,7 +39,7 @@ while(True):
    # selectt = Select(driver.find_element(By.CSS_SELECTOR, value="#search_dsstr"))
    # selectt.select_by_index(5)
     driver.find_element(By.CLASS_NAME, value= "search_btn").click()
-
+    print("running")
     time.sleep(1)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
