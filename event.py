@@ -13,7 +13,15 @@ import paramiko
 options = webdriver.ChromeOptions()
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option("useAutomationExtension", False)
-
+options.add_argument("--headless")
+options.add_argument("window-size=1400,1500")
+options.add_argument("--disable-gpu")
+options.add_argument("--no-sandbox")
+options.add_argument("start-maximized")
+options.add_argument("enable-automation")
+options.add_argument("--disable-infobars")
+options.add_argument("--disable-dev-shm-usage")
+driver = webdriver.Chrome(options=options)
 
 
 # 페이지 url 형식에 맞게 바꾸어 주는 함수 만들기 
@@ -47,6 +55,7 @@ def makeUrl(search, start_pg, end_pg):
 
 ##########뉴스크롤링 시작###################
 def start(search):
+    print("뉴스 크롤링 시작")
     # naver url 생성
     search_urls = makeUrl(search, 1, 3)
 
